@@ -1,0 +1,10 @@
+.vscode
+.idea
+dist/
+svc/
+.cache/
+build/
+public/
+.DS_Store
+helm/charts
+node_modules/

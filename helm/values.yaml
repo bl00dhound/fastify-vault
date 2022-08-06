@@ -1,0 +1,76 @@
+postgresql:
+  enabled: true
+  auth:
+    username: 'fastify'
+    password: 'fastifyPassword'
+    database: 'fastify'
+  fullnameOverride: 'rds'
+  service:
+    type: LoadBalancer
+  persistence:
+    enabled: false
+  primary:
+    initdb:
+      scripts:
+        00_init.sql: |
+          create table example (id serial primary key, name varchar(255));
+
+replicaCount: 1
+
+image:
+  repository: fastify
+  tag: local
+  pullPolicy: Never
+
+imagePullSecrets: []
+nameOverride: "fastify-app"
+fullnameOverride: "fastify-app"
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "fastify-app"
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+service:
+  type: LoadBalancer
+  port: 8080
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
