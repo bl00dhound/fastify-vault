@@ -31,7 +31,29 @@ serviceAccount:
   annotations: {}
   name: "fastify-app"
 
-podAnnotations: {}
+podAnnotations:
+  vault.hashicorp.com/tls-skip-verify: "true"
+  vault.hashicorp.com/agent-inject: "true"
+  vault.hashicorp.com/agent-inject-token: "true"
+  vault.hashicorp.com/agent-init-first: "true"
+  vault.hashicorp.com/agent-limits-cpu: "500m"
+  vault.hashicorp.com/agent-limits-mem: "128Mi"
+  vault.hashicorp.com/agent-requests-cpu: "250m"
+  vault.hashicorp.com/agent-requests-mem: "64Mi"
+  vault.hashicorp.com/auth-path: 'auth/tenant-kubernetes'
+  vault.hashicorp.com/role: 'tenant-role'
+  vault.hashicorp.com/agent-inject-secret-database-config: "tenant-kv/rds/fastify"
+  vault.hashicorp.com/agent-inject-template-database-config: |
+    {{- with secret "tenant-kv/rds/fastify" -}}
+    DB_HOST={{ .Data.data.host }}
+    DB_PASSWORD={{ .Data.data.password }}
+    DB_USER={{ .Data.data.username }}
+    DB_PORT={{ .Data.data.port }}
+    DB_NAME={{ .Data.data.database }}
+    {{- end }}
+
+
+
 
 podSecurityContext: {}
   # fsGroup: 2000

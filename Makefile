@@ -1,4 +1,5 @@
 install:
+	helm repo add hashicorp https://helm.releases.hashicorp.com
 	kubectl create namespace fastify-vault
 	kubectl config set-context --current --namespace fastify-vault
 
@@ -12,6 +13,15 @@ docker-build:
 
 start:
 	helm install fastify-vault ./helm
+
+start-vault:
+	./scripts/start-vault.sh
+
+stop-vault:
+	./scripts/stop-vault.sh
+
+forward-vault:
+	kubectl port-forward svc/vault 8200
 
 stop:
 	helm uninstall fastify-vault
